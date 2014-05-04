@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dashboardApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title> AngularJs Table Framework</title>
+		 <link rel="stylesheet" href="/AsiaVocAdmin/css/bootstrap.css" />
+        <link rel="stylesheet" href="/AsiaVocAdmin/css/dashboard.css" />
+        <link rel="stylesheet" href="/AsiaVocAdmin/css/font-awesome.min.css" />
+        <link rel="shortcut icon" href="/AsiaVocAdmin/images/favicon.ico" class="title-logo" type="image/x-icon" />
+		
+		<script type="text/javascript" src="/AsiaVocAdmin/js/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="/AsiaVocAdmin/js/angular.min.js"></script>
+        <script type="text/javascript" src="/AsiaVocAdmin/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/AsiaVocAdmin/js/dashboard.js"></script>
+        <script type="text/javascript" src="/AsiaVocAdmin/js/jquery.isloading.js"></script>
+
+
+    </head>
+     <body>       
+     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h2 class="sub-header">AngularJs Table</h2>        
+			 <!-- table start -->         
+			 <div ng-controller="fieldSyncListCtrl">
+			    <div class="row">
+			        <div class="col-lg-3" style="margin: 10px 0;">
+			            <input type="text" ng-model="query" ng-change="search()" class="form-control search-query" placeholder="搜尋">
+			        </div>
+			        <div class="col-lg-9" style="">
+			            <div class="pagination pull-right" style="margin: 10px 0;">
+			                <ul class="pagination" style="margin: 0px 0;">
+			                    <li ng-class="{disabled: currentPage == 0}">
+			                        <a href ng-click="prevPage()">&laquo; 上頁</a>
+			                    </li>
+			                    <li ng-repeat="n in range(pagedItems.length, currentPage, currentPage + gap) "
+			                        ng-class="{active: n == currentPage}"
+			                        ng-click="setPage()">
+			                        <a href ng-bind="n + 1">1</a>
+			                    </li>
+			                    <li ng-class="{disabled: (currentPage) == pagedItems.length - 1}">
+			                        <a href ng-click="nextPage()">下頁 &raquo;</a>
+			                    </li>
+			                    <li ng-class="">
+			                        <a href ng-click="setItemsPage(10)">10筆</a>
+			                    </li>
+			                    <li ng-class="">
+			                        <a href ng-click="setItemsPage(50)">50筆</a>
+			                    </li>
+			                     <li ng-class="">
+			                        <a href ng-click="setItemsPage(100)">100筆</a>
+			                    </li>
+			                    <li ng-class="{disabled: currentPage == 0}">
+			                        <a href ng-click="firstPage()">首頁</a>
+			                    </li>
+			                    <li ng-class="{disabled: currentPage == pagedItems.length-1}">
+			                        <a href ng-click="endPage()"> 末頁 </a>
+			                    </li>
+			                </ul>
+			            </div>
+			        </div>
+			    </div>
+			    <div class="row">
+			        <div class="col-lg-12">
+			            <table class="table table-striped table-hover">
+			                <thead>
+			                    <tr>                       
+			                        <th class="idx" custom-sort order="'id'" sort="sort">交易序號&nbsp;</th>
+			                        <th class="creationDatex" custom-sort order="'creationDate'" sort="sort">同步日期&nbsp;</th>
+			                        <th class="transactionNamex" custom-sort order="'transactionName'" sort="sort">執行名稱&nbsp;</th>
+			                        <th class="appStatusx" custom-sort order="'appStatus'" sort="sort">狀態&nbsp;</th>
+			                        <th>#同步訊息</th>  
+			                    </tr>
+			                </thead>
+			                <tbody>
+			                     <tr ng-repeat="item in pagedItems[currentPage] | orderBy:sort.sortingOrder:sort.reverse">        
+			                             <td>{{item.id}}</td>
+			                             <td>{{item.creationDate}}</td>
+			                             <td>{{item.transactionName}}</td>
+			                             <td>
+			                                 <div class="susscessInfo" ng-if="item.appStatus==100">{{item.appStatusName}}</div>
+			                                 <div class="errorInfo"    ng-if="item.appStatus!=100">{{item.appStatusName}}</div>
+			                             </td>     
+			                             <td><i style="font-size:16px" class="glyphicon glyphicon-align-left" ng-click="openDetail(item.id)"></i></td>
+			                    </tr>
+			                </tbody>
+			                <tfoot>
+			                    <tr>
+			                        <td colspan="7" ng-show="selectItems[0]" class="bs-callout bs-callout-danger">
+			                            <div style="padding-top:10px;">
+			                                <div class="row">
+			                                    <div class="col-lg-12" style="line-height:30px">
+			                                        交易序號: {{selectItems[0].id}}<br>
+			                                        同步日期: {{selectItems[0].creationDate}}<br>                                                            
+			                                                                                 同步訊息: <br>{{selectItems[0].msg}} 
+			                                    </div>
+			                                </div>
+			                                
+			                                <div class="text-right"><button type="button" class="btn btn-primary" ng-click="toClose(selectItems[0].id)">close</button></div>
+			                            </div>
+			                           
+			                        </td>
+			                     </tr>
+			                </tfoot>
+			            </table>
+			            <div class="row">
+			                <div style="margin-top:2px;margin-left:10px;border-top: 2px solid #000000;padding:10px">
+			                    目前顯示 {{(currentPage*itemsPerPage+1)|json}} 至 {{(currentPage+1)*itemsPerPage > filteredItems.length?filteredItems.length:(currentPage+1)*itemsPerPage|json}} 共 {{filteredItems.length|json}} 筆
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			    <!-- table end -->
+	</div>
+  </body>
+  </html> 
